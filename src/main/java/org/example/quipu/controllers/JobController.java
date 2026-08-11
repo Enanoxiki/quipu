@@ -1,8 +1,11 @@
 package org.example.quipu.controllers;
 
+import org.example.quipu.models.Job;
 import org.example.quipu.services.JobService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/jobs")
@@ -14,8 +17,10 @@ public class JobController {
     }
 
     @GetMapping("/{jobId}")
-    public String jobById(@PathVariable("jobId") String jobId) {
-        return jobService.getJobById(jobId);
+    public ResponseEntity<Job> jobById(@PathVariable("jobId") UUID jobId) {
+        return jobService.getJobById(jobId)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping()
