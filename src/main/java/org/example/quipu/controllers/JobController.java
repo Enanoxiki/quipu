@@ -1,10 +1,13 @@
 package org.example.quipu.controllers;
 
+import org.example.quipu.dto.CreateJobResponse;
 import org.example.quipu.models.Job;
 import org.example.quipu.services.JobService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -23,8 +26,9 @@ public class JobController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping()
-    public String createJob() {
-        return jobService.createJob();
+    @PostMapping
+    public ResponseEntity<CreateJobResponse> createJob() {
+        CreateJobResponse job = jobService.createJob();
+        return ResponseEntity.created(URI.create("/api/jobs/" + job.jobId())).body(job);
     }
 }
